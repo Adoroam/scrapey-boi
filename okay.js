@@ -12,6 +12,7 @@ const cheerio = require('cheerio')
 ==============================*/
 
 const app = express()
+const { TWITCH_A, TWITCH_B } = process.env
 
 /*==============================
 ========== FUNCTIONS ===========
