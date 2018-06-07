@@ -6,6 +6,7 @@ const express = require('express')
 const fs = require('fs')
 const request = require('request')
 const cheerio = require('cheerio')
+const Twitch = require('twitch.tv-api')
 
 /*==============================
 ========== CONSTANTS ===========
@@ -13,6 +14,10 @@ const cheerio = require('cheerio')
 
 const app = express()
 const { TWITCH_A, TWITCH_B } = process.env
+const twitch = new Twitch({
+  id: TWITCH_A,
+  secret: TWITCH_B
+})
 
 /*==============================
 ========== FUNCTIONS ===========
