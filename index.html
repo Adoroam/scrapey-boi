@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Ado's Scraper</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- <link rel="stylesheet" type="text/css" media="screen" href="main.css" /> -->
+</head>
+<body>
+  <h1 id="output">Scrapey Boi</h1>
+  <form action="/scrape" method="POST">
+    <input type="text" name="url" id="urltext">
+    <button type="submit" id="submit">scrape</button>
+  </form>
+  <script>
+    let input = document.getElementById('urltext')
+    let submit = document.getElementById('submit')
+    input.onkeypress = ({ code }) => code === 'Enter' ? submit.click() : null
+  </script>
+</body>
+</html>

@@ -1,45 +1,62 @@
 /*==============================
 =========== IMPORTS ============
 ==============================*/
+
 require('dotenv').config()
 const express = require('express')
 const fs = require('fs')
-const request = require('request')
 const cheerio = require('cheerio')
-const Twitch = require('twitch.tv-api')
+const axios = require('axios')
+const { urlencoded, json } = require('body-parser')
+const jwt = require('jsonwebtoken')
 
 /*==============================
 ========== CONSTANTS ===========
 ==============================*/
 
 const app = express()
-const { TWITCH_A, TWITCH_B } = process.env
-const twitch = new Twitch({
-  id: TWITCH_A,
-  secret: TWITCH_B
-})
+
+const { TWITCH_A, TWITCH_B, REDIRECT } = process.env
+
 
 /*==============================
 ========== FUNCTIONS ===========
 ==============================*/
 
-const scrape = (req, res) => {
-  let url = ''
-  request(url, (err, resp, html) => {
-    if (err) res.send(err)
-    let $ = cheerio.load(html)
-    let output = {}
 
-  })
+const scrape = async (req, res) => {
+  let { url } = req.method === 'POST'
+    ? req.body
+    : { url: 'https://www.youtube.com/watch?v=eUYMiztBEdY' }
+  let html = await axios.get(url).then(d => d.data).catch(err => console.error(err))
+  const $ = cheerio.load(html)
+  let output = {
+    // description: $('#description'),
+    desc_links: await $('#description').children('a').map((i, ele) => $(this).attr('href')).toArray()
+  }
+  // let text = $('.mw-headline').map((i, ele) => $(ele).text()).toArray()
+
+  let test_var = $('#upnext').text()
+  console.dir(test_var, {colors: true, depth: 1})
+
+  res.json(output)  
+}
+const to_index = (req, res) => {
+  res.sendFile(__dirname + '/index.html')
 }
 
 /*==============================
 ========== LISTENERS ===========
 ==============================*/
 
-app.get('/butts', scrape)
+app.use(urlencoded({ extended: true }))
+app.use(json())
 
-app.listen(8080, () => console.log('server started'))
+app.get('/', to_index)
+app.get('/scrape', scrape)
+app.post('/scrape', scrape)
+
+app.listen(80, () => console.log('server started'))
 
 /*==============================
 =========== EXPORTS ============
